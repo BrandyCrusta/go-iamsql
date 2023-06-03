@@ -34,16 +34,18 @@ func (s *IAMServer) readBindingsByResourcesAndMembers(
 		})
 	}
 
-	policyBindings := []*PolicyBinding{}
+	query := s.sqlClient.Model(&PolicyBinding{})
+
 	for resource := range resourcesAndParents {
 		for _, member := range members {
-			policyBindings = append(policyBindings, &PolicyBinding{Resource: resource, Member: member})
+			query = query.Or(&PolicyBinding{Member: member, Resource: resource})
 		}
 	}
 
 	policyBindingsResult := []*PolicyBinding{}
-	if result := s.sqlClient.Raw("EXEC dbo.sp_iam_policy_bindings_get_by_resources_and_members ?", policyBindings).Scan(policyBindingsResult); result.Error != nil {
-		return s.handleStorageError(ctx, result.Error)
+
+	if err := query.Find(&policyBindingsResult).Error; err != nil {
+		s.handleStorageError(ctx, err)
 	}
 
 	for _, policyBinding := range policyBindingsResult {

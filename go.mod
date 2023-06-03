@@ -8,7 +8,7 @@ require (
 	go.einride.tech/iam v0.48.1
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.29.1
-	gorm.io/gorm v1.25.0
+	gorm.io/gorm v1.25.1
 )
 
 require (

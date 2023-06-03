@@ -59,9 +59,9 @@ func (s *IAMServer) setIamPolicy(
 		}
 	}
 
-	if result := tx.Raw("EXEC dbo.sp_iam_policy_bindings_bulk_create_notx ?", policyBindings); result.Error != nil {
+	if err := tx.Create(policyBindings).Error; err != nil {
 		tx.Rollback()
-		return nil, s.handleStorageError(ctx, result.Error)
+		return nil, s.handleStorageError(ctx, err)
 	}
 
 	if err := tx.Commit().Error; err != nil {

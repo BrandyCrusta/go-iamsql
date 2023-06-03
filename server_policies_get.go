@@ -31,9 +31,8 @@ func (s *IAMServer) getIamPolicy(
 	var binding *iampb.Binding
 
 	var policyBindings []PolicyBinding
-	result := tx.Raw("EXEC sp_iam_policy_bindings_get_by_resource ?", resource).Scan(&policyBindings)
-	if result.Error != nil {
-		return nil, s.handleStorageError(ctx, result.Error)
+	if err := s.sqlClient.Where(&PolicyBinding{Resource: resource}).Find(&policyBindings).Error; err != nil {
+		return nil, s.handleStorageError(ctx, err)
 	}
 
 	for _, policyBinding := range policyBindings {
