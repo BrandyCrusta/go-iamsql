@@ -10,6 +10,8 @@ import (
 	"go.einride.tech/aip/validation"
 	"go.einride.tech/iam/iampermission"
 	"go.einride.tech/iam/iamresource"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // TestIamPermissions implements iampb.IAMPolicyServer.
@@ -38,7 +40,7 @@ func (s *IAMServer) TestIamPermissions(
 			return nil
 		},
 	); err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Unauthenticated, err.Error())
 	}
 	response := &iampb.TestIamPermissionsResponse{
 		Permissions: make([]string, 0, len(permissions)),
