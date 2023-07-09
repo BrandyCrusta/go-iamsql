@@ -15,6 +15,9 @@ func (s *IAMServer) readBindingsByResourcesAndMembers(
 	members []string,
 	fn func(ctx context.Context, resource string, role *adminpb.Role, member string) error,
 ) error {
+	if len(members) == 0 {
+		return fmt.Errorf("Request missing members")
+	}
 	// Deduplicate resources and parents to read.
 	resourcesAndParents := make(map[string]struct{}, len(resources))
 	// Include root resource.
