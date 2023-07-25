@@ -32,8 +32,8 @@ func (s *IAMServer) TestPermissions(
 				result[resource] = result[resource] ||
 					(boundResource == iamresource.Root ||
 						resource == boundResource ||
-						resourcename.HasParent(resource, boundResource) &&
-							iamrole.HasPermission(role, permission))
+						resourcename.HasParent(resource, boundResource)) &&
+							iamrole.HasPermission(role, permission)
 			}
 			return nil
 		},
